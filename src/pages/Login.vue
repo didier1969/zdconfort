@@ -63,7 +63,9 @@ export default {
           var params = [];
           params.push(inParams);
           that.odoo.execute_kw('res.user', 'read', params, function (err, value) {
-        return 'toto';
+            return 'toto';
+          });
+        });
       }
     },
     odoo: {
