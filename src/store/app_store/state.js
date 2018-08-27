@@ -3,7 +3,7 @@ export default {
   odooPort: '443',
   odooDb: 'proto-odoo11-zdc01',
   odooUserName: 'eden@outlook.com',
-  odooPassword: 'stdi5757???!!!',
+  odooPassword: 'upwork01',
   odoo: null,
   odooUser: null
 }
