@@ -62,7 +62,7 @@ export default {
           inParams.push(10);  //Limit
           var params = [];
           params.push(inParams);
-          that.odoo.execute_kw('res.user', 'read', params, function (err, value) {
+          myOdoo.execute_kw('res.user', 'read', params, function (err, value) {
             return 'toto';
           });
         });

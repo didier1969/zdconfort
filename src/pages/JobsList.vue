@@ -1,23 +1,14 @@
 <template>
   <q-page class="flex flex-center">
     <q-list highlight separator multiline>
-      <q-list-header>Recent chats</q-list-header>
-      <q-item>
-        <q-item-main label="John Doe" sublabel="Didier" />
+      <q-list-header>Partners</q-list-header>
+      <q-item
+        v-for="p in partners"
+        v-bind:key="p.id">
+        <q-item-main :label="p.name" :sublabel="p.website" />
         <q-item-side right>
-          <q-item-tile icon="chat_bubble" color="green" />
+          <q-item-tile icon="" color="green" />
         </q-item-side>
-      </q-item>
-      <q-item>
-        <q-item-side avatar="statics/linux-avatar.png" />
-        <q-item-main label="Jim Doe" />
-        <q-item-side right icon="chat_bubble" />
-      </q-item>
-      <q-item-separator />
-      <q-list-header>Previous chats</q-list-header>
-      <q-item>
-        <q-item-side avatar="statics/guy-avatar.png" />
-        <q-item-main label="Jack Doe" />
       </q-item>
     </q-list>
   </q-page>
@@ -37,55 +28,47 @@ export default {
   data: function() {
     return {
       odoo: this.$store.state.appStore.odoo,
+      partners: []
     }
   },
   mounted() {
-    console.log("Time to fetch some data !");
+    console.log("Time to fetch some datax !");
 
-    var that = this;
+    this.fetchData();
 
-    that.odoo.connect(function (err) {
-      if (err) { return console.log(err); }
-      console.log('Connected to Odoo server.');
-      var inParams = [];
-      inParams.push([]);
-      inParams.push(0);  //offset
-      inParams.push(10);  //Limit
-      var params = [];
-      params.push(inParams);
-      that.odoo.execute_kw('calendar.event', 'search', params, function (err, value) {
-          if (err) { return console.log(err); }
-          var inParams = [];
-          inParams.push(value); //ids
-          inParams.push(['start', 'stop', 'comment']); //fields
-          var params = [];
-          params.push(inParams);
-          that.odoo.execute_kw('calendar.event', 'read', params, function (err2, value2) {
-              if (err2) { return console.log(err2); }
-              console.log('Result: ', value2);
-          });
-      });
-  });
-
-    that.odoo.connect(function (err) {
-        if (err) { return console.log(err); }
-        console.log('Connected to Odoo server.');
-        var inParams = [];
-        inParams.push([['is_company', '=', false],['customer', '=', false]]);
-        inParams.push(0); //offset
-        inParams.push(5);  //limit
-        var params = [];
-        params.push(inParams);
-        console.log({that, params});
-        that.odoo.execute_kw('event.calendar', 'search', params, function (err, value) {
-            if (err) { return console.log(err); }
-            console.log('Result: ', value);
-        });
-    });
   },
   methods: {
     logout() {
       this.$router.push('/')
+    },
+    fetchData() {
+      var myOdoo = this.$store.state.appStore.odoo;
+
+      var that = this;
+
+      myOdoo.connect(function (err) {
+        if (err) { return console.log(err); }
+        console.log('Connected to Odoo server.');
+        var inParams = [];
+        inParams.push([]);
+        inParams.push(0);  //offset
+        inParams.push(10);  //Limit
+        var params = [];
+        params.push(inParams);
+        myOdoo.execute_kw('res.partner', 'search', params, function (err, value) {
+            if (err) { return console.log(err); }
+            var inParams = [];
+            inParams.push(value); //ids
+            inParams.push(['name', 'customer', 'image', 'ref', 'website', 'date_localization', 'partner_latitude', 'partner_longitude']); //fields
+            var params = [];
+            params.push(inParams);
+            myOdoo.execute_kw('res.partner', 'read', params, function (err2, partners) {
+                if (err2) { return console.log(err2); }
+                console.log('Result: ', partners);
+                that.partners = partners;
+            });
+        });
+      });
     }
   }
 };
